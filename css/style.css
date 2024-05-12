@@ -57,11 +57,13 @@ color: #fff;
   font-weight: 400;
   font-style: normal;
      }
-.subrayado
- {
-      text-decoration-line: underline;
+.subrayado:hover{
+      padding: 5px;
+      animation-iteration-count: infinite;
+      transition: 1000ms;
+      border: lightcoral groove;
       text-decoration-color: lightcoral; /* Cambia el color del subrayado */
-      text-decoration-style: solid; /* Establece el estilo del subrayado */  
+    
     
 
  }
@@ -102,7 +104,7 @@ color: #fff;
 
   .backgroundnew{
 
-    box-shadow: -8px 6px 10px rgba(255, 255, 255, 0.5); /* Sombra en el lado izquierdo */
+   
     background-color:#393333 ;
   }
 
