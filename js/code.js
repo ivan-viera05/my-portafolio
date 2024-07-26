@@ -45,11 +45,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-function miFuncion() {
-    Start();
-  
-}
+  document.getElementById("miboton").addEventListener("click", function() {
+    if(document.readyState === "complete" || document.readyState === "interactive") {
+        Init();
+    } else {
+        document.addEventListener("DOMContentLoaded", Init);
+    }
+});
 
+document.getElementById("reiniciarBoton").addEventListener("click", function() {
+    score = 0;
+    ReiniciarJuego();
+});
+
+document.addEventListener("keydown", HandleKeyDown);
+document.addEventListener("touchstart", HandleTouchStart);
+
+function HandleTouchStart(ev) {
+    Saltar();
+}
 
 var contadorReinicios = 0;
 
@@ -58,66 +72,14 @@ var contadorReinicios = 0;
 var time = new Date();
 var deltaTime = 0;
 
-document.getElementById("miboton").addEventListener("click", function() {
-    if(document.readyState === "complete" || document.readyState === "interactive") {
-        Init();
-    } else {
-        document.addEventListener("DOMContentLoaded", Init);
-    }
-});
-document.getElementById("reiniciarBoton").addEventListener("click", function() {
-      
-      // Obtener el valor actual del contador
-      
-
-      // Incrementar el contador en 1
-    
-
-      // Actualizar el texto del contador
-    score = 0;
-    ReiniciarJuego();
-    
-});
-
-function ReiniciarJuego() {
-  // Reiniciar variables del juego
-  time = new Date();
-  
-  velY = 0;
-  dinoPosX = 42;
-  dinoPosY = sueloY;
-  sueloX = 0;
-  gameVel = 1;
-  score = 0;
-  parado = false;
-  saltando = false;
-  tiempoHastaObstaculo = 2;
-  tiempoHastaNube = 0.5;
-  
-  // Eliminar obstáculos y nubes existentes
-  for (var i = 0; i < obstaculos.length; i++) {
-      contenedor.removeChild(obstaculos[i]);
-  }
-  obstaculos = [];
-  for (var i = 0; i < nubes.length; i++) {
-      contenedor.removeChild(nubes[i]);
-  }
-  nubes = [];
-  
-  // Ocultar el mensaje de Game Over si está visible
-  gameOver.style.display = "none";
-  
-  // Reiniciar estilos y animaciones
-  suelo.style.left = "0px";
-  suelo.style.animationDuration = "3s";
-  contenedor.classList.remove("mediodia", "tarde", "noche");
-  
-  // Iniciar el juego nuevamente
-  Init();
-}
-
-
 function Init() {
+    if (!contenedor) {
+        gameOver = document.querySelector(".game-over");
+        suelo = document.querySelector(".suelo");
+        contenedor = document.querySelector(".contenedor");
+        textoScore = document.querySelector(".score");
+        dino = document.querySelector(".dino");
+    }
     time = new Date();
     Start();
     Loop();
@@ -208,10 +170,9 @@ function Saltar(){
 function MoverDinosaurio() {
     dinoPosY += velY * deltaTime;
     if(dinoPosY < sueloY){
-        
         TocarSuelo();
     }
-    dino.style.bottom = dinoPosY+"px";
+    dino.style.bottom = dinoPosY + "px";
 }
 
 function TocarSuelo() {
@@ -258,10 +219,10 @@ function CrearObstaculo() {
     obstaculo.classList.add("cactus");
     if(Math.random() > 0.5) obstaculo.classList.add("cactus2");
     obstaculo.posX = contenedor.clientWidth;
-    obstaculo.style.left = contenedor.clientWidth+"px";
+    obstaculo.style.left = contenedor.clientWidth + "px";
 
     obstaculos.push(obstaculo);
-    tiempoHastaObstaculo = tiempoObstaculoMin + Math.random() * (tiempoObstaculoMax-tiempoObstaculoMin) / gameVel;
+    tiempoHastaObstaculo = tiempoObstaculoMin + Math.random() * (tiempoObstaculoMax - tiempoObstaculoMin) / gameVel;
 }
 
 function CrearNube() {
@@ -269,11 +230,11 @@ function CrearNube() {
     contenedor.appendChild(nube);
     nube.classList.add("nube");
     nube.posX = contenedor.clientWidth;
-    nube.style.left = contenedor.clientWidth+"px";
-    nube.style.bottom = minNubeY + Math.random() * (maxNubeY-minNubeY)+"px";
+    nube.style.left = contenedor.clientWidth + "px";
+    nube.style.bottom = minNubeY + Math.random() * (maxNubeY - minNubeY) + "px";
     
     nubes.push(nube);
-    tiempoHastaNube = tiempoNubeMin + Math.random() * (tiempoNubeMax-tiempoNubeMin) / gameVel;
+    tiempoHastaNube = tiempoNubeMin + Math.random() * (tiempoNubeMax - tiempoNubeMin) / gameVel;
 }
 
 function MoverObstaculos() {
@@ -282,9 +243,9 @@ function MoverObstaculos() {
             obstaculos[i].parentNode.removeChild(obstaculos[i]);
             obstaculos.splice(i, 1);
             GanarPuntos();
-        }else{
+        } else {
             obstaculos[i].posX -= CalcularDesplazamiento();
-            obstaculos[i].style.left = obstaculos[i].posX+"px";
+            obstaculos[i].style.left = obstaculos[i].posX + "px";
         }
     }
 }
@@ -294,9 +255,9 @@ function MoverNubes() {
         if(nubes[i].posX < -nubes[i].clientWidth) {
             nubes[i].parentNode.removeChild(nubes[i]);
             nubes.splice(i, 1);
-        }else{
+        } else {
             nubes[i].posX -= CalcularDesplazamiento() * velNube;
-            nubes[i].style.left = nubes[i].posX+"px";
+            nubes[i].style.left = nubes[i].posX + "px";
         }
     }
 }
@@ -307,14 +268,14 @@ function GanarPuntos() {
     if(score == 5){
         gameVel = 1.5;
         contenedor.classList.add("mediodia");
-    }else if(score == 10) {
+    } else if(score == 10) {
         gameVel = 2;
         contenedor.classList.add("tarde");
     } else if(score == 20) {
         gameVel = 3;
         contenedor.classList.add("noche");
     }
-    suelo.style.animationDuration = (3/gameVel)+"s";
+    suelo.style.animationDuration = (3 / gameVel) + "s";
 }
 
 function GameOver() {
@@ -325,9 +286,8 @@ function GameOver() {
 function DetectarColision() {
     for (var i = 0; i < obstaculos.length; i++) {
         if(obstaculos[i].posX > dinoPosX + dino.clientWidth) {
-            //EVADE
-            break; //al estar en orden, no puede chocar con más
-        }else{
+            break;
+        } else {
             if(IsCollision(dino, obstaculos[i], 10, 30, 15, 20)) {
                 GameOver();
             }
@@ -347,8 +307,41 @@ function IsCollision(a, b, paddingTop, paddingRight, paddingBottom, paddingLeft)
     );
 }
 
+function ReiniciarJuego() {
+    time = new Date();
+    velY = 0;
+    dinoPosX = 42;
+    dinoPosY = sueloY;
+    sueloX = 0;
+    gameVel = 1;
+    score = 0;
+    parado = false;
+    saltando = false;
+    tiempoHastaObstaculo = 2;
+    tiempoHastaNube = 0.5;
+
+    for (var i = 0; i < obstaculos.length; i++) {
+        contenedor.removeChild(obstaculos[i]);
+    }
+    obstaculos = [];
+    for (var i = 0; i < nubes.length; i++) {
+        contenedor.removeChild(nubes[i]);
+    }
+    nubes = [];
+
+    gameOver.style.display = "none";
+    suelo.style.left = "0px";
+    suelo.style.animationDuration = "3s";
+    contenedor.classList.remove("mediodia", "tarde", "noche");
+
+    Init();
+}
 
 
+//Proyectos
+function changeImage(src) {
+  document.getElementById('mainImage').src = src;
+}
 
 
 
