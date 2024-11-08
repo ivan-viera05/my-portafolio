@@ -1,6 +1,6 @@
 
 function abrirPDF() {
-    var urlPDF = 'file:///C:/Users/ivicr/Documents/tarea/ux2/others/cv.pdf'; // Reemplaza 'ruta/del/archivo.pdf' con la URL del archivo PDF
+    var urlPDF = 'others/IvanCV.pdf'; // Reemplaza 'ruta/del/archivo.pdf' con la URL del archivo PDF
     window.open(urlPDF, '_blank');
 }
 
